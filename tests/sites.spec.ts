@@ -5,13 +5,21 @@ import { abrirSimulador, aguardarEstabilizar, ctaClicavel, monitorarErros, trata
 
 const LIMITE_CARREGAMENTO_MS = 10_000;
 
-/** Avança pelas telas iniciais do simulador (ex.: escolha de marca) até o campo de nome. */
+/** Avança pelas telas iniciais do simulador (ex.: escolha de marca ou de crédito) até o campo de nome. */
 async function irParaEtapaNome(page: Page) {
   const nome = page.locator("input[name=name]");
-  for (let i = 0; i < 3 && !(await nome.isVisible().catch(() => false)); i++) {
-    const avancar = page.locator("button:visible").filter({ hasNotText: /^ver /i }).first();
+  const avancoNomeado = page
+    .getByRole("button", { name: /continuar|simular|próximo|avançar|escolher/i })
+    .or(page.getByRole("link", { name: /continuar|simular|próximo|avançar/i }));
+  const qualquerBotao = page
+    .locator("button:visible:not([disabled])")
+    .filter({ hasNotText: /^ver /i })
+    .and(page.locator(":not([aria-label*='valor' i])"));
+
+  for (let i = 0; i < 4 && !(await nome.isVisible().catch(() => false)); i++) {
+    const avancar = (await avancoNomeado.filter({ visible: true }).count()) ? avancoNomeado.filter({ visible: true }).first() : qualquerBotao.first();
     if (!(await avancar.count())) break;
-    await avancar.click();
+    await avancar.click({ timeout: 10_000 }).catch(() => {});
     await nome.waitFor({ state: "visible", timeout: 8_000 }).catch(() => {});
   }
   return nome;
@@ -50,8 +58,14 @@ for (const site of loadSites()) {
     });
 
     await test.step("Verificar elementos da homepage", async () => {
-      const titulo = page.locator("h1").or(page.frameLocator("iframe").locator("h1")).first();
-      await expect(titulo, "Título principal (h1) ausente").toBeVisible();
+      // O título pode estar na página ou dentro de um iframe
+      await expect
+        .poll(async () => {
+          for (const frame of page.frames())
+            if (await frame.locator("h1:visible").count().catch(() => 0)) return true;
+          return false;
+        }, { message: "Título principal (h1) ausente" })
+        .toBe(true);
       const semScroll = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
       if (!semScroll) registrarFalha("Baixa", "Página tem rolagem horizontal no celular (conteúdo maior que a tela)");
     });
