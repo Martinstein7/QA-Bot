@@ -1,0 +1,5 @@
+produto,categoria,parceiro,url,ativo
+compra-planejada,celular,parceiro-a,https://parceria.exemplo.com.br/compra-planejada/celular/parceiro-a,sim
+compra-planejada,moto,parceiro-b,https://parceria.exemplo.com.br/compra-planejada/moto/parceiro-b,sim
+consorcio,automovel,parceiro-c,https://parceria.exemplo.com.br/consorcio/automovel/parceiro-c,sim
+consorcio,imovel,parceiro-d,https://parceria.exemplo.com.br/consorcio/imovel/parceiro-d,nao
