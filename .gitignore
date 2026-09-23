@@ -1,0 +1,22 @@
+# Dependências
+node_modules/
+
+# Segredos e configuração local (domínios, chaves de API)
+.env
+.env.*
+!.env.example
+
+# Lista real de sites testados (use data/sites.example.csv como modelo)
+data/sites.csv
+
+# Resultados, evidências e relatórios gerados
+test-results/
+playwright-report/
+reports/
+*.db
+*.db-journal
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/

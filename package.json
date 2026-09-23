@@ -1,0 +1,24 @@
+{
+  "name": "qa-automacao-consorcio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Automação de QA para sites de consórcio em dispositivos móveis, com relatório gerado por IA",
+  "scripts": {
+    "test": "playwright test",
+    "relatorio": "tsx src/relatorio.ts",
+    "qa": "playwright test & tsx src/relatorio.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "@playwright/test": "^1.63.0",
+    "csv-parse": "^7.0.2",
+    "dotenv": "^18.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
